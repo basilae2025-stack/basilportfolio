@@ -59,27 +59,31 @@ function updateActiveNavLink() {
     });
 }
 
-// CV Download Modal
-downloadCVBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    cvModal.classList.add('active');
-});
+// CV Download Modal (guarded for missing elements)
+if (downloadCVBtn && cvModal && modalClose) {
+    downloadCVBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        cvModal.classList.add('active');
+    });
 
-footerDownloadCVBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    cvModal.classList.add('active');
-});
-
-modalClose.addEventListener('click', () => {
-    cvModal.classList.remove('active');
-});
-
-// Close modal when clicking outside
-cvModal.addEventListener('click', (e) => {
-    if (e.target === cvModal) {
-        cvModal.classList.remove('active');
+    if (footerDownloadCVBtn) {
+        footerDownloadCVBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            cvModal.classList.add('active');
+        });
     }
-});
+
+    modalClose.addEventListener('click', () => {
+        cvModal.classList.remove('active');
+    });
+
+    // Close modal when clicking outside
+    cvModal.addEventListener('click', (e) => {
+        if (e.target === cvModal) {
+            cvModal.classList.remove('active');
+        }
+    });
+}
 
 // Portfolio Filtering
 filterBtns.forEach(btn => {
@@ -94,7 +98,7 @@ filterBtns.forEach(btn => {
         portfolioItems.forEach(item => {
             const categories = item.getAttribute('data-category').split(' ');
             
-            if (filter === 'all' || categories.includes(filter)) {
+            if (categories.includes(filter)) {
                 item.style.display = 'block';
                 setTimeout(() => {
                     item.style.opacity = '1';
@@ -258,8 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Add animation to portfolio items
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-    portfolioItems.forEach((item, index) => {
+    const portfolioItemsInit = document.querySelectorAll('.portfolio-item');
+    portfolioItemsInit.forEach((item, index) => {
         item.style.opacity = '0';
         item.style.transform = 'translateY(20px)';
         
@@ -269,4 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
             item.style.transform = 'translateY(0)';
         }, index * 150);
     });
+    
+    // Initialize portfolio filter - trigger active filter on page load
+    const activeFilterBtn = document.querySelector('.filter-btn.active');
+    if (activeFilterBtn) {
+        activeFilterBtn.click();
+    }
 });
